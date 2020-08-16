@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/inggit_prakasa/Employee/database"
+	"github.com/inggit_prakasa/Employee/helpers"
 )
 
 type User struct {
@@ -13,14 +14,14 @@ type User struct {
 
 func CheckLogin(username, password string) (bool, error) {
 	var obj User
-	//var pass string
+	var pass string
 
 	con := database.Connection()
 
-	sqlstatement := "SELECT * FROM users WHERE username = ?"
+	sqlstatement := "SELECT * FROM user WHERE username = ?"
 
 	err := con.QueryRow(sqlstatement,username).Scan(
-		&obj.Id, &obj.Username,
+		&obj.Id, &obj.Username,&pass,
 		)
 
 	if err == sql.ErrNoRows {
@@ -30,6 +31,12 @@ func CheckLogin(username, password string) (bool, error) {
 
 	if err != nil {
 		fmt.Println("Query Error")
+		return false, err
+	}
+
+	match, err := helpers.CheckPasswordHash(password, pass)
+	if !match {
+		fmt.Println("Hash and password doesn't match.")
 		return false, err
 	}
 
