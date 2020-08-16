@@ -18,7 +18,7 @@ func CheckLogin(username, password string) (bool, error) {
 
 	con := database.Connection()
 
-	sqlstatement := "SELECT * FROM user WHERE username = ?"
+	sqlstatement := "SELECT employee_id,employee_username,employee_password FROM employee WHERE employee_username = ?"
 
 	err := con.QueryRow(sqlstatement,username).Scan(
 		&obj.Id, &obj.Username,&pass,
@@ -33,6 +33,8 @@ func CheckLogin(username, password string) (bool, error) {
 		fmt.Println("Query Error")
 		return false, err
 	}
+
+
 
 	match, err := helpers.CheckPasswordHash(password, pass)
 	if !match {

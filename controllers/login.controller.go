@@ -5,9 +5,27 @@ import (
 	"github.com/inggit_prakasa/Employee/helpers"
 	"github.com/inggit_prakasa/Employee/models"
 	"github.com/labstack/echo"
+	"html/template"
+	"io"
 	"net/http"
 	"time"
 )
+
+type TemplateRenderer struct {
+	templates *template.Template
+}
+
+// Render renders a template document
+func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
+
+	// Add global methods if data is a map
+	if viewContext, isMap := data.(map[string]interface{}); isMap {
+		viewContext["reverse"] = c.Echo().Reverse
+	}
+
+	return t.templates.ExecuteTemplate(w, name, data)
+}
+
 
 func CheckLogin(c echo.Context) error {
 	username := c.FormValue("username")
@@ -43,6 +61,11 @@ func CheckLogin(c echo.Context) error {
 		"token": t,
 	})
 }
+
+func Login(c echo.Context) error {
+	return c.Render(http.StatusOK, "login.html",nil)
+}
+
 
 func GenerateHashPassword(c echo.Context) error {
 	password := c.Param("password")
