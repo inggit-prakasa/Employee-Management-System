@@ -6,23 +6,22 @@ import (
 	"net/http"
 )
 
-type Employee struct {
+type Attendance struct {
 	Id int `json:"id"`
-	Name string `json:"name"`
-	Mobile string `json:"mobile"`
-	Email string `json:"email"`
-	Username string `json:"username"`
-	Address string `json:"address"`
+	EmpId int `json:"emp_id"`
+	Type string `json:"type"`
+	Description string `json:"description"`
+	Created string `json:"created"`
 }
 
-func GetAllEmployee() (Response,error) {
-	var obj Employee
-	var arrObj []Employee
+func GetAllAttendance() (Response,error) {
+	var obj Attendance
+	var arrObj []Attendance
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee"
+	sqlStatement := "SELECT * FROM attendance"
 
 	rows, err := conn.Query(sqlStatement)
 
@@ -33,7 +32,7 @@ func GetAllEmployee() (Response,error) {
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.Name, &obj.Mobile, &obj.Email, &obj.Username, &obj.Address)
+		err = rows.Scan(&obj.Id, &obj.EmpId, &obj.Type, &obj.Description, &obj.Created)
 		if err != nil {
 			return res, err
 		}
@@ -48,34 +47,32 @@ func GetAllEmployee() (Response,error) {
 	return res,nil
 }
 
-func AddEmployee(name, mobile, email, username, address string) (Response,error) {
+func AddAttendance(empId int, tipe, description string) (Response,error) {
 	var res Response
 
 	v := validator.New()
 
-	emp := Employee{
-		Name:     name,
-		Mobile:   mobile,
-		Email:    email,
-		Username: username,
-		Address:  address,
+	att := Attendance{
+		EmpId:       empId,
+		Type:        tipe,
+		Description: description,
 	}
 
-	err := v.Struct(emp)
+	err := v.Struct(att)
 	if err != nil {
 		return res, err
 	}
 
 	conn := database.Connection()
 
-	sqlStatement := "INSERT employee (employee_name, employee_mobile, employee_email, employee_username, employee_address) VALUES (?,?,?,?,?)"
+	sqlStatement := "INSERT attendance (attendance_employee_id, attendance_type, attendance_description) VALUES (?,?,?)"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(name,mobile,email,username,address)
+	result, err := stmt.Exec(empId,tipe,description)
 	if err != nil {
 		return res, err
 	}
@@ -92,22 +89,21 @@ func AddEmployee(name, mobile, email, username, address string) (Response,error)
 	}
 
 	return res,nil
-
 }
 
-func UpdateEmployee(id int, name, mobile, email, username, address string) (Response, error) {
+func EditAttendance(id,empId int, tipe, description, created string ) (Response,error) {
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "UPDATE employee SET employee_name = ?, employee_mobile = ?, employee_email = ?, employee_username = ?, employee_address = ? WHERE employee_id = ?"
+	sqlStatement := "UPDATE attendance SET attendance_type = ?, attendance_description = ?, attendance_created = ? WHERE attendance_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(name,mobile,email,username,address,id)
+	result, err := stmt.Exec(tipe,description,created,id)
 	if err != nil {
 		return res, err
 	}
@@ -126,13 +122,13 @@ func UpdateEmployee(id int, name, mobile, email, username, address string) (Resp
 	return res, nil
 }
 
-func FindEmployee(id int) (Response,error) {
+func FindAttendance(id int) (Response,error) {
 	var res Response
-	var obj Employee
+	var obj Attendance
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee WHERE employee_id = ?"
+	sqlStatement := "SELECT * FROM attendance WHERE attendance_id = ?"
 
 	rows, err := conn.Query(sqlStatement,id)
 
@@ -143,7 +139,7 @@ func FindEmployee(id int) (Response,error) {
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.Name, &obj.Mobile, &obj.Email, &obj.Username, &obj.Address)
+		err = rows.Scan(&obj.Id, &obj.EmpId, &obj.Type, &obj.Description, &obj.Created)
 		if err != nil {
 			return res, err
 		}
@@ -157,12 +153,12 @@ func FindEmployee(id int) (Response,error) {
 	return res, nil
 }
 
-func DeleteEmployee(id int) (Response, error) {
+func DeleteAttendance(id int) (Response,error) {
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "DELETE FROM employee WHERE employee_id = ?"
+	sqlStatement := "DELETE FROM attendance WHERE attendance_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {

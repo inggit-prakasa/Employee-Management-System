@@ -42,7 +42,13 @@ func Init() *echo.Echo {
 	e.GET("/employee/:id",controllers.FindEmployee)
 	e.POST("/employee",controllers.AddEmployee)
 	e.PUT("/employee",controllers.UpdateEmployee)
-	e.DELETE("/employee",controllers.DeleteEmployee)
+	e.DELETE("/employee/:id",controllers.DeleteEmployee)
+
+	e.GET("attendance", controllers.GetAllAttendance)
+	e.GET("/attendance/:id", controllers.FindAttendance)
+	e.POST("/attendance",controllers.AddAttendance)
+	e.PUT("/attendance",controllers.EditAttendance)
+	e.DELETE("/attendance/:id",controllers.DeleteAttendance)
 
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)
 	e.POST("/login", controllers.CheckLogin)
