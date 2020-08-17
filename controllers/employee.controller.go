@@ -54,7 +54,7 @@ func UpdateEmployee(c echo.Context) error {
 }
 
 func DeleteEmployee(c echo.Context) error {
-	id := c.FormValue("id")
+	id := c.Param("id")
 
 	convId, err := strconv.Atoi(id)
 	if err != nil {

@@ -40,7 +40,6 @@ func EditAttendance(c echo.Context) error {
 	empId := c.FormValue("empId")
 	tipe := c.FormValue("type")
 	desc := c.FormValue("description")
-	created := c.FormValue("created")
 
 	convId, err := strconv.Atoi(id)
 	if err != nil {
@@ -52,7 +51,7 @@ func EditAttendance(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message" : err.Error()})
 	}
 
-	result, err := models.EditAttendance(convId,convEmpId,tipe,desc,created)
+	result, err := models.EditAttendance(convId,convEmpId,tipe,desc)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message" : err.Error()})
 	}
@@ -77,7 +76,7 @@ func FindAttendance(c echo.Context) error {
 }
 
 func DeleteAttendance(c echo.Context) error {
-	id := c.FormValue("id")
+	id := c.Param("id")
 
 	convId, err := strconv.Atoi(id)
 	if err != nil {

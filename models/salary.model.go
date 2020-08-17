@@ -6,22 +6,23 @@ import (
 	"net/http"
 )
 
-type Attendance struct {
+type Salary struct {
 	Id int `json:"id"`
 	EmpId int `json:"emp_id"`
+	Amount int `json:"amount"`
+	Total int `json:"total"`
 	Type string `json:"type"`
 	Description string `json:"description"`
-	Created string `json:"created"`
 }
 
-func GetAllAttendance() (Response,error) {
-	var obj Attendance
-	var arrObj []Attendance
+func GetAllSalary() (Response,error) {
+	var obj Salary
+	var arrObj []Salary
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT * FROM attendance"
+	sqlStatement := "SELECT * FROM salary"
 
 	rows, err := conn.Query(sqlStatement)
 
@@ -32,7 +33,7 @@ func GetAllAttendance() (Response,error) {
 	}
 
 	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.EmpId, &obj.Type, &obj.Description, &obj.Created)
+		err = rows.Scan(&obj.Id, &obj.EmpId, &obj.Amount, &obj.Total, &obj.Type, &obj.Description)
 		if err != nil {
 			return res, err
 		}
@@ -47,32 +48,34 @@ func GetAllAttendance() (Response,error) {
 	return res,nil
 }
 
-func AddAttendance(empId int, tipe, description string) (Response,error) {
+func AddSalary(empId,amount,total int,tipe, description string) (Response,error) {
 	var res Response
 
 	v := validator.New()
 
-	att := Attendance{
+	sal := Salary{
 		EmpId:       empId,
+		Amount:      amount,
+		Total:       total,
 		Type:        tipe,
 		Description: description,
 	}
 
-	err := v.Struct(att)
+	err := v.Struct(sal)
 	if err != nil {
 		return res, err
 	}
 
 	conn := database.Connection()
 
-	sqlStatement := "INSERT attendance (attendance_employee_id, attendance_type, attendance_description) VALUES (?,?,?)"
+	sqlStatement := "INSERT salary (salary_employee_id, salary_amount, salary_total, salary_type, salary_description) VALUES (?,?,?,?,?)"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(empId,tipe,description)
+	result, err := stmt.Exec(empId,amount,total,tipe,description)
 	if err != nil {
 		return res, err
 	}
@@ -91,19 +94,19 @@ func AddAttendance(empId int, tipe, description string) (Response,error) {
 	return res,nil
 }
 
-func EditAttendance(id,empId int, tipe, description string ) (Response,error) {
+func EditSalary(id, empId, amount,total int, tipe, description string) (Response,error) {
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "UPDATE attendance SET attendance_employee_id = ?, attendance_type = ?, attendance_description = ? WHERE attendance_id = ?"
+	sqlStatement := "UPDATE salary SET salary_employee_id = ?, salary_amount = ?, salary_total = ?, salary_type = ?, salary_description = ? WHERE salary_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(empId,tipe,description,id)
+	result, err := stmt.Exec(empId,amount,total,tipe,description,id)
 	if err != nil {
 		return res, err
 	}
@@ -122,43 +125,12 @@ func EditAttendance(id,empId int, tipe, description string ) (Response,error) {
 	return res, nil
 }
 
-func FindAttendance(id int) (Response,error) {
-	var res Response
-	var obj Attendance
-
-	conn := database.Connection()
-
-	sqlStatement := "SELECT * FROM attendance WHERE attendance_id = ?"
-
-	rows, err := conn.Query(sqlStatement,id)
-
-	defer rows.Close()
-
-	if err != nil {
-		return res, err
-	}
-
-	for rows.Next() {
-		err = rows.Scan(&obj.Id, &obj.EmpId, &obj.Type, &obj.Description, &obj.Created)
-		if err != nil {
-			return res, err
-		}
-
-	}
-
-	res.Status = http.StatusOK
-	res.Message = "Success"
-	res.Data = obj
-
-	return res, nil
-}
-
-func DeleteAttendance(id int) (Response,error) {
+func DeleteSalary(id int) (Response,error){
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "DELETE FROM attendance WHERE attendance_id = ?"
+	sqlStatement := "DELETE FROM salary WHERE salary_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
@@ -180,6 +152,37 @@ func DeleteAttendance(id int) (Response,error) {
 	res.Data = map[string]int64 {
 		"rowsAffected" : rowsAffected,
 	}
+
+	return res, nil
+}
+
+func FindSalary(id int) (Response, error) {
+	var res Response
+	var obj Salary
+
+	conn := database.Connection()
+
+	sqlStatement := "SELECT * FROM salary WHERE salary_id = ?"
+
+	rows, err := conn.Query(sqlStatement,id)
+
+	defer rows.Close()
+
+	if err != nil {
+		return res, err
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&obj.Id, &obj.EmpId, &obj.Amount, &obj.Total, &obj.Type, &obj.Description)
+		if err != nil {
+			return res, err
+		}
+
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = obj
 
 	return res, nil
 }
