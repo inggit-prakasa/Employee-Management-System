@@ -1,10 +1,12 @@
 package routes
 
 import (
-	"github.com/inggit_prakasa/Employee/controllers"
-	"github.com/labstack/echo"
 	"html/template"
 	"io"
+
+	"github.com/inggit_prakasa/Employee/controllers"
+
+	"github.com/labstack/echo"
 )
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
@@ -35,25 +37,33 @@ func Init() *echo.Echo {
 	e.GET("/", controllers.Dashboard)
 
 	//--------------------------------------------------------
-	e.GET("/employee",controllers.EmployeePage)
-	e.GET("/employee/:id",controllers.FindEmployee)
-	e.POST("/employee",controllers.AddEmployee)
-	e.PUT("/employee",controllers.UpdateEmployee)
-	e.DELETE("/delemployee/:id",controllers.DeleteEmployee)
+	e.GET("/employee", controllers.EmployeePage)
+	e.GET("/employee", controllers.GetAllEmployee)
+	e.GET("/employee/:id", controllers.FindEmployee)
+	e.POST("/employee", controllers.AddEmployee)
+	e.PUT("/employee", controllers.UpdateEmployee)
+	e.DELETE("/employee", controllers.DeleteEmployee)
+
+	//-----------------------------------------------------------------
+	e.POST("/register", controllers.RegisterEmployee)
+	e.PUT("/status/:id", controllers.SetStatusEmployee)
+	e.GET("/viewstatus/:id", controllers.ViewStatusEmployee)
+	e.GET("/laporanall", controllers.LaporanAll)
+	e.GET("/laporanbyid/:id", controllers.LaporanById)
 
 	//-----------------------------------------------------------
 	e.GET("/attendance", controllers.AttendancePage)
 	e.GET("/attendance/:id", controllers.FindAttendance)
-	e.POST("/attendance",controllers.AddAttendance)
-	e.PUT("/attendance",controllers.EditAttendance)
-	e.DELETE("/delattendance/:id",controllers.DeleteAttendance)
+	e.POST("/attendance", controllers.AddAttendance)
+	e.PUT("/attendance", controllers.EditAttendance)
+	e.DELETE("/delattendance/:id", controllers.DeleteAttendance)
 
 	//------------------------------------------------------------
 	e.GET("/salary", controllers.SalaryPage)
 	e.GET("/salary/:id", controllers.FindSalary)
-	e.POST("/salary",controllers.AddSalary)
-	e.PUT("/salary",controllers.EditSalary)
-	e.DELETE("/delsalary/:id",controllers.DeleteSalary)
+	e.POST("/salary", controllers.AddSalary)
+	e.PUT("/salary", controllers.EditSalary)
+	e.DELETE("/delsalary/:id", controllers.DeleteSalary)
 
 	//----------------------------------------------------------------------
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)

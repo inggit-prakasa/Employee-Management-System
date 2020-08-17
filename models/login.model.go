@@ -3,12 +3,13 @@ package models
 import (
 	"database/sql"
 	"fmt"
+
 	"github.com/inggit_prakasa/Employee/database"
 	"github.com/inggit_prakasa/Employee/helpers"
 )
 
 type User struct {
-	Id int `json:"id"`
+	Id       int    `json:"id"`
 	Username string `json:"username"`
 }
 
@@ -20,9 +21,9 @@ func CheckLogin(username, password string) (bool, error) {
 
 	sqlstatement := "SELECT employee_id,employee_username,employee_password FROM employee WHERE employee_username = ?"
 
-	err := con.QueryRow(sqlstatement,username).Scan(
-		&obj.Id, &obj.Username,&pass,
-		)
+	err := con.QueryRow(sqlstatement, username).Scan(
+		&obj.Id, &obj.Username, &pass,
+	)
 
 	if err == sql.ErrNoRows {
 		fmt.Println("Username not found")

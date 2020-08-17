@@ -1,14 +1,15 @@
 package controllers
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/inggit_prakasa/Employee/helpers"
-	"github.com/inggit_prakasa/Employee/models"
-	"github.com/labstack/echo"
 	"html/template"
 	"io"
 	"net/http"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/inggit_prakasa/Employee/helpers"
+	"github.com/inggit_prakasa/Employee/models"
+	"github.com/labstack/echo"
 )
 
 type TemplateRenderer struct {
@@ -16,7 +17,7 @@ type TemplateRenderer struct {
 }
 
 type JwtClaims struct {
-	Name        string    `json:"name"`
+	Name string `json:"name"`
 	jwt.StandardClaims
 }
 
@@ -31,12 +32,11 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 	return t.templates.ExecuteTemplate(w, name, data)
 }
 
-
 func CheckLogin(c echo.Context) error {
 	username := c.FormValue("username")
 	password := c.FormValue("password")
 
-	res, err := models.CheckLogin(username,password)
+	res, err := models.CheckLogin(username, password)
 	if err != nil {
 		return c.Redirect(http.StatusPermanentRedirect, "/login")
 	}
@@ -63,22 +63,21 @@ func CheckLogin(c echo.Context) error {
 		return c.Redirect(http.StatusPermanentRedirect, "/login")
 	}
 
-	return c.Redirect(http.StatusPermanentRedirect,"/")
+	return c.Redirect(http.StatusPermanentRedirect, "/")
 }
 
 func Login(c echo.Context) error {
-	return c.Render(http.StatusOK, "login.html",nil)
+	return c.Render(http.StatusOK, "login.html", nil)
 }
 
 func Dashboard(c echo.Context) error {
 	result, err := models.GetAllEmployee()
 
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message":err.Error()})
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
-	return c.Render(http.StatusOK,"dashboard.html",result)
+	return c.Render(http.StatusOK, "dashboard.html", result)
 }
-
 
 func GenerateHashPassword(c echo.Context) error {
 	password := c.Param("password")
