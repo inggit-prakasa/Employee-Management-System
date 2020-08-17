@@ -40,6 +40,7 @@ func Init() *echo.Echo {
 
 	e.Static("/", "html")
 
+<<<<<<< HEAD
 	e.GET("/employee", controllers.GetAllEmployee)
 	e.GET("/employee/:id", controllers.FindEmployee)
 	e.POST("/employee", controllers.AddEmployee)
@@ -53,6 +54,27 @@ func Init() *echo.Echo {
 	e.GET("/laporanall", controllers.LaporanAll)
 	e.GET("/laporanbyid/:id", controllers.LaporanById)
 	//-----------------------------------------------------------------
+=======
+	e.GET("/employee",controllers.GetAllEmployee)
+	e.GET("/employee/:id",controllers.FindEmployee)
+	e.POST("/employee",controllers.AddEmployee)
+	e.PUT("/employee",controllers.UpdateEmployee)
+	e.DELETE("/delemployee/:id",controllers.DeleteEmployee)
+
+	//-----------------------------------------------------------
+	e.GET("/attendance", controllers.GetAllAttendance)
+	e.GET("/attendance/:id", controllers.FindAttendance)
+	e.POST("/attendance",controllers.AddAttendance)
+	e.PUT("/attendance",controllers.EditAttendance)
+	e.DELETE("/delattendance/:id",controllers.DeleteAttendance)
+
+	//------------------------------------------------------------
+	e.GET("/salary", controllers.GetAllSalary)
+	e.GET("/salary/:id", controllers.FindSalary)
+	e.POST("/salary",controllers.AddSalary)
+	e.PUT("/salary",controllers.EditSalary)
+	e.DELETE("/delsalary/:id",controllers.DeleteSalary)
+>>>>>>> 9a9e023b1d6050d40f3ef642041e37c19e0760ab
 
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)
 	e.POST("/login", controllers.CheckLogin)

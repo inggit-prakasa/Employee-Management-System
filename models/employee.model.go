@@ -100,7 +100,7 @@ func UpdateEmployee(id int, name, mobile, email, username, address string) (Resp
 
 	conn := database.Connection()
 
-	sqlStatement := "UPDATE employee SET nama = ?, mobile = ?, email = ?, username = ?, address = ? WHERE id = ?"
+	sqlStatement := "UPDATE employee SET employee_name = ?, employee_mobile = ?, employee_email = ?, employee_username = ?, employee_address = ? WHERE employee_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
