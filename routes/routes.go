@@ -36,12 +36,7 @@ func Init() *echo.Echo {
 	}
 	e.Renderer = renderer
 
-	// Named route "foobar"
-	e.GET("/something", func(c echo.Context) error {
-		return c.Render(http.StatusOK, "something.html", map[string]interface{}{
-			"name": "Dolly!",
-		})
-	}).Name = "foobar"
+	e.Static("/", "html")
 
 	e.GET("/employee",controllers.GetAllEmployee)
 	e.GET("/employee/:id",controllers.FindEmployee)

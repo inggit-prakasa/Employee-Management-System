@@ -34,8 +34,6 @@ func CheckLogin(username, password string) (bool, error) {
 		return false, err
 	}
 
-
-
 	match, err := helpers.CheckPasswordHash(password, pass)
 	if !match {
 		fmt.Println("Hash and password doesn't match.")

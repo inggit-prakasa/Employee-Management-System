@@ -50,16 +50,14 @@ func CheckLogin(c echo.Context) error {
 	claims["level"] = "application"
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
-	t, err := token.SignedString([]byte("secret"))
+	_, err = token.SignedString([]byte("secret"))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{
 			"messages": err.Error(),
 		})
 	}
 
-	return c.JSON(http.StatusOK, map[string]string{
-		"token": t,
-	})
+	return c.Render(http.StatusOK,"dashboard.html",nil)
 }
 
 func Login(c echo.Context) error {
