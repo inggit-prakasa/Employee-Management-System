@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+func AttendancePage(c echo.Context) error {
+	return c.Render(http.StatusOK,"attendance.html",nil)
+}
+
 func GetAllAttendance(c echo.Context) error {
 	result, err := models.GetAllAttendance()
 

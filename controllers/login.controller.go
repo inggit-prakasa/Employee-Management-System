@@ -15,6 +15,11 @@ type TemplateRenderer struct {
 	templates *template.Template
 }
 
+type JwtClaims struct {
+	Name        string    `json:"name"`
+	jwt.StandardClaims
+}
+
 // Render renders a template document
 func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 
@@ -32,36 +37,46 @@ func CheckLogin(c echo.Context) error {
 	password := c.FormValue("password")
 
 	res, err := models.CheckLogin(username,password)
-
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"message": err.Error(),
-		})
+		return c.Redirect(http.StatusPermanentRedirect, "/login")
 	}
+
+	cookie := &http.Cookie{}
+
+	cookie.Name = "sessionID"
+	cookie.Value = "some_string"
+	cookie.Expires = time.Now().Add(48 * time.Hour)
+
+	c.SetCookie(cookie)
 
 	if !res {
 		return echo.ErrUnauthorized
 	}
-
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = username
 	claims["level"] = "application"
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-
 	_, err = token.SignedString([]byte("secret"))
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{
-			"messages": err.Error(),
-		})
+		return c.Redirect(http.StatusPermanentRedirect, "/login")
 	}
 
-	return c.Render(http.StatusOK,"dashboard.html",nil)
+	return c.Redirect(http.StatusPermanentRedirect,"/")
 }
 
 func Login(c echo.Context) error {
 	return c.Render(http.StatusOK, "login.html",nil)
+}
+
+func Dashboard(c echo.Context) error {
+	result, err := models.GetAllEmployee()
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message":err.Error()})
+	}
+	return c.Render(http.StatusOK,"dashboard.html",result)
 }
 
 

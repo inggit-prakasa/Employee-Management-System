@@ -5,7 +5,6 @@ import (
 	"github.com/labstack/echo"
 	"html/template"
 	"io"
-	"net/http"
 )
 
 // TemplateRenderer is a custom html/template renderer for Echo framework
@@ -26,38 +25,37 @@ func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c 
 
 func Init() *echo.Echo {
 	e := echo.New()
-
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello, this is echo!")
-	})
-
 	renderer := &TemplateRenderer{
 		templates: template.Must(template.ParseGlob("html/*.html")),
 	}
 	e.Renderer = renderer
 
 	e.Static("/", "html")
+	e.POST("/", controllers.Dashboard)
+	e.GET("/", controllers.Dashboard)
 
-	e.GET("/employee",controllers.GetAllEmployee)
+	//--------------------------------------------------------
+	e.GET("/employee",controllers.EmployeePage)
 	e.GET("/employee/:id",controllers.FindEmployee)
 	e.POST("/employee",controllers.AddEmployee)
 	e.PUT("/employee",controllers.UpdateEmployee)
 	e.DELETE("/delemployee/:id",controllers.DeleteEmployee)
 
 	//-----------------------------------------------------------
-	e.GET("/attendance", controllers.GetAllAttendance)
+	e.GET("/attendance", controllers.AttendancePage)
 	e.GET("/attendance/:id", controllers.FindAttendance)
 	e.POST("/attendance",controllers.AddAttendance)
 	e.PUT("/attendance",controllers.EditAttendance)
 	e.DELETE("/delattendance/:id",controllers.DeleteAttendance)
 
 	//------------------------------------------------------------
-	e.GET("/salary", controllers.GetAllSalary)
+	e.GET("/salary", controllers.SalaryPage)
 	e.GET("/salary/:id", controllers.FindSalary)
 	e.POST("/salary",controllers.AddSalary)
 	e.PUT("/salary",controllers.EditSalary)
 	e.DELETE("/delsalary/:id",controllers.DeleteSalary)
 
+	//----------------------------------------------------------------------
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)
 	e.POST("/login", controllers.CheckLogin)
 	e.GET("/login", controllers.Login)

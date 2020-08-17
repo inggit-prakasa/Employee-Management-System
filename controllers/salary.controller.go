@@ -7,6 +7,10 @@ import (
 	"strconv"
 )
 
+func SalaryPage(c echo.Context) error {
+	return c.Render(http.StatusOK, "salary.html",nil)
+}
+
 func GetAllSalary(c echo.Context) error {
 	result, err := models.GetAllSalary()
 
