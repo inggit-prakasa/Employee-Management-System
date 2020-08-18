@@ -1,20 +1,21 @@
 package models
 
 import (
+	"net/http"
+
 	"github.com/go-playground/validator"
 	"github.com/inggit_prakasa/Employee/database"
-	"net/http"
 )
 
 type Attendance struct {
-	Id int `json:"id"`
-	EmpId int `json:"emp_id"`
-	Type string `json:"type"`
+	Id          int    `json:"id"`
+	EmpId       int    `json:"emp_id"`
+	Type        string `json:"type"`
 	Description string `json:"description"`
-	Created string `json:"created"`
+	Created     string `json:"created"`
 }
 
-func GetAllAttendance() (Response,error) {
+func GetAllAttendance() (Response, error) {
 	var obj Attendance
 	var arrObj []Attendance
 	var res Response
@@ -37,17 +38,17 @@ func GetAllAttendance() (Response,error) {
 			return res, err
 		}
 
-		arrObj = append(arrObj,obj)
+		arrObj = append(arrObj, obj)
 	}
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
 	res.Data = arrObj
 
-	return res,nil
+	return res, nil
 }
 
-func AddAttendance(empId int, tipe, description string) (Response,error) {
+func AddAttendance(empId int, tipe, description string) (Response, error) {
 	var res Response
 
 	v := validator.New()
@@ -72,26 +73,26 @@ func AddAttendance(empId int, tipe, description string) (Response,error) {
 		return res, err
 	}
 
-	result, err := stmt.Exec(empId,tipe,description)
+	result, err := stmt.Exec(empId, tipe, description)
 	if err != nil {
 		return res, err
 	}
 
 	lastInsertId, err := result.LastInsertId()
 	if err != nil {
-		return res,err
+		return res, err
 	}
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
-	res.Data = map[string]int64 {
-		"last_insert_id" : lastInsertId,
+	res.Data = map[string]int64{
+		"last_insert_id": lastInsertId,
 	}
 
-	return res,nil
+	return res, nil
 }
 
-func EditAttendance(id,empId int, tipe, description string ) (Response,error) {
+func EditAttendance(id, empId int, tipe, description string) (Response, error) {
 	var res Response
 
 	conn := database.Connection()
@@ -103,7 +104,7 @@ func EditAttendance(id,empId int, tipe, description string ) (Response,error) {
 		return res, err
 	}
 
-	result, err := stmt.Exec(empId,tipe,description,id)
+	result, err := stmt.Exec(empId, tipe, description, id)
 	if err != nil {
 		return res, err
 	}
@@ -115,14 +116,14 @@ func EditAttendance(id,empId int, tipe, description string ) (Response,error) {
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
-	res.Data = map[string]int64 {
-		"rowsAffected" : rowsAffected,
+	res.Data = map[string]int64{
+		"rowsAffected": rowsAffected,
 	}
 
 	return res, nil
 }
 
-func FindAttendance(id int) (Response,error) {
+func FindAttendance(id int) (Response, error) {
 	var res Response
 	var obj Attendance
 
@@ -130,7 +131,7 @@ func FindAttendance(id int) (Response,error) {
 
 	sqlStatement := "SELECT * FROM attendance WHERE attendance_id = ?"
 
-	rows, err := conn.Query(sqlStatement,id)
+	rows, err := conn.Query(sqlStatement, id)
 
 	defer rows.Close()
 
@@ -153,7 +154,7 @@ func FindAttendance(id int) (Response,error) {
 	return res, nil
 }
 
-func DeleteAttendance(id int) (Response,error) {
+func DeleteAttendance(id int) (Response, error) {
 	var res Response
 
 	conn := database.Connection()
@@ -177,8 +178,8 @@ func DeleteAttendance(id int) (Response,error) {
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
-	res.Data = map[string]int64 {
-		"rowsAffected" : rowsAffected,
+	res.Data = map[string]int64{
+		"rowsAffected": rowsAffected,
 	}
 
 	return res, nil

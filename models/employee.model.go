@@ -1,13 +1,14 @@
 package models
 
 import (
-	"github.com/inggit_prakasa/Employee/database"
 	"net/http"
+
+	"github.com/inggit_prakasa/Employee/database"
 
 	"github.com/go-playground/validator"
 )
 
-type github.com/inggit_prakasa/Employee struct {
+type employee struct {
 	Id       int    `json:"id"`
 	Name     string `json:"name"`
 	Mobile   string `json:"mobile"`
@@ -17,14 +18,14 @@ type github.com/inggit_prakasa/Employee struct {
 	Status   string `json:"status"`
 }
 
-func GetAllgithub.com/inggit_prakasa/Employee() (Response, error) {
-	var obj github.com/inggit_prakasa/Employee
-	var arrObj []github.com/inggit_prakasa/Employee
+func GetAllEmployee() (Response, error) {
+	var obj employee
+	var arrObj []employee
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT github.com/inggit_prakasa/Employee_id,github.com/inggit_prakasa/Employee_name,github.com/inggit_prakasa/Employee_mobile,github.com/inggit_prakasa/Employee_email, github.com/inggit_prakasa/Employee_username,github.com/inggit_prakasa/Employee_address FROM github.com/inggit_prakasa/Employee"
+	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee"
 
 	rows, err := conn.Query(sqlStatement)
 
@@ -50,12 +51,12 @@ func GetAllgithub.com/inggit_prakasa/Employee() (Response, error) {
 	return res, nil
 }
 
-func Addgithub.com/inggit_prakasa/Employee(name, mobile, email, username, address string) (Response, error) {
+func AddEmployee(name, mobile, email, username, address string) (Response, error) {
 	var res Response
 
 	v := validator.New()
 
-	emp := github.com/inggit_prakasa/Employee{
+	emp := employee{
 		Name:     name,
 		Mobile:   mobile,
 		Email:    email,
@@ -70,7 +71,7 @@ func Addgithub.com/inggit_prakasa/Employee(name, mobile, email, username, addres
 
 	conn := database.Connection()
 
-	sqlStatement := "INSERT github.com/inggit_prakasa/Employee (github.com/inggit_prakasa/Employee_name, github.com/inggit_prakasa/Employee_mobile, github.com/inggit_prakasa/Employee_email, github.com/inggit_prakasa/Employee_username, github.com/inggit_prakasa/Employee_address) VALUES (?,?,?,?,?)"
+	sqlStatement := "INSERT employee (employee_name, employee_mobile, employee_email, employee_username, employee_address) VALUES (?,?,?,?,?)"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
@@ -97,12 +98,12 @@ func Addgithub.com/inggit_prakasa/Employee(name, mobile, email, username, addres
 
 }
 
-func Updategithub.com/inggit_prakasa/Employee(id int, name, mobile, email, username, address string) (Response, error) {
+func UpdateEmployee(id int, name, mobile, email, username, address string) (Response, error) {
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "UPDATE github.com/inggit_prakasa/Employee SET github.com/inggit_prakasa/Employee_name = ?, github.com/inggit_prakasa/Employee_mobile = ?, github.com/inggit_prakasa/Employee_email = ?, github.com/inggit_prakasa/Employee_username = ?, github.com/inggit_prakasa/Employee_address = ? WHERE github.com/inggit_prakasa/Employee_id = ?"
+	sqlStatement := "UPDATE employee SET employee_name = ?, employee_mobile = ?, employee_email = ?, employee_username = ?, employee_address = ? WHERE employee_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
@@ -128,13 +129,13 @@ func Updategithub.com/inggit_prakasa/Employee(id int, name, mobile, email, usern
 	return res, nil
 }
 
-func Findgithub.com/inggit_prakasa/Employee(id int) (Response, error) {
+func FindEmployee(id int) (Response, error) {
 	var res Response
-	var obj github.com/inggit_prakasa/Employee
+	var obj employee
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT github.com/inggit_prakasa/Employee_id,github.com/inggit_prakasa/Employee_name,github.com/inggit_prakasa/Employee_mobile,github.com/inggit_prakasa/Employee_email, github.com/inggit_prakasa/Employee_username,github.com/inggit_prakasa/Employee_address FROM github.com/inggit_prakasa/Employee WHERE github.com/inggit_prakasa/Employee_id = ?"
+	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee WHERE employee_id = ?"
 
 	rows, err := conn.Query(sqlStatement, id)
 
@@ -159,12 +160,12 @@ func Findgithub.com/inggit_prakasa/Employee(id int) (Response, error) {
 	return res, nil
 }
 
-func Deletegithub.com/inggit_prakasa/Employee(id int) (Response, error) {
+func DeleteEmployee(id int) (Response, error) {
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "DELETE FROM github.com/inggit_prakasa/Employee WHERE github.com/inggit_prakasa/Employee_id = ?"
+	sqlStatement := "DELETE FROM employee WHERE employee_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
@@ -191,12 +192,12 @@ func Deletegithub.com/inggit_prakasa/Employee(id int) (Response, error) {
 }
 
 //------------------------------------------------------------------------------------------
-func SetStatusgithub.com/inggit_prakasa/Employee(id int, status string) (Response, error) {
+func SetStatusEmployee(id int, status string) (Response, error) {
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "UPDATE github.com/inggit_prakasa/Employee SET github.com/inggit_prakasa/Employee_status = ? WHERE github.com/inggit_prakasa/Employee_id = ?"
+	sqlStatement := "UPDATE employee SET employee_status = ? WHERE employee_id = ?"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {

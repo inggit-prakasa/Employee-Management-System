@@ -1,15 +1,16 @@
 package controllers
 
 import (
-	"github.com/inggit_prakasa/Employee/models"
 	"net/http"
 	"strconv"
+
+	"github.com/inggit_prakasa/Employee/models"
 
 	"github.com/labstack/echo"
 )
 
 func AttendancePage(c echo.Context) error {
-	return c.Render(http.StatusOK,"attendance.html",nil)
+	return c.Render(http.StatusOK, "attendance.html", nil)
 }
 
 func GetAllAttendance(c echo.Context) error {

@@ -36,11 +36,8 @@ func Init() *echo.Echo {
 	e.POST("/", controllers.Dashboard)
 	e.GET("/", controllers.Dashboard)
 
-<<<<<<< HEAD
-=======
 	//--------------------------------------------------------
 	e.GET("/employee", controllers.EmployeePage)
->>>>>>> b4d56cdd99829730f6fcae1b4af7dbd137f26b18
 	e.GET("/employee", controllers.GetAllEmployee)
 	e.GET("/employee/:id", controllers.FindEmployee)
 	e.POST("/employee", controllers.AddEmployee)
@@ -54,15 +51,12 @@ func Init() *echo.Echo {
 	e.GET("/viewstatus/:id", controllers.ViewStatusEmployee)
 	e.GET("/laporanall", controllers.LaporanAll)
 	e.GET("/laporanbyid/:id", controllers.LaporanById)
-<<<<<<< HEAD
 	//-----------------------------------------------------------------
 	e.GET("/employee", controllers.GetAllEmployee)
 	e.GET("/employee/:id", controllers.FindEmployee)
 	e.POST("/employee", controllers.AddEmployee)
 	e.PUT("/employee", controllers.UpdateEmployee)
 	e.DELETE("/delemployee/:id", controllers.DeleteEmployee)
-=======
->>>>>>> b4d56cdd99829730f6fcae1b4af7dbd137f26b18
 
 	//-----------------------------------------------------------
 	e.GET("/attendance", controllers.AttendancePage)
