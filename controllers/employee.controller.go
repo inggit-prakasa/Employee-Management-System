@@ -9,6 +9,10 @@ import (
 	"github.com/labstack/echo"
 )
 
+func EmployeePage(c echo.Context) error {
+	return c.Render(http.StatusOK, "employee.html", nil)
+}
+
 func GetAllEmployee(c echo.Context) error {
 	result, err := models.GetAllEmployee()
 
