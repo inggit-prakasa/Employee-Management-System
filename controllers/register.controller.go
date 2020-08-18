@@ -9,17 +9,21 @@ import (
 	"github.com/labstack/echo"
 )
 
-func GetAllEmployee(c echo.Context) error {
-	result, err := models.GetAllEmployee()
+// Render renders a template document
+// func (t *TemplateRenderer) Render(w io.Writer, name string, data interface{}, c echo.Context) error {
 
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
-	}
+// 	// Add global methods if data is a map
+// 	if viewContext, isMap := data.(map[string]interface{}); isMap {
+// 		viewContext["reverse"] = c.Echo().Reverse
+// 	}
 
-	return c.JSON(http.StatusOK, result)
+// 	return t.templates.ExecuteTemplate(w, name, data)
+// }
+
+func Register(c echo.Context) error {
+	return c.Render(http.StatusOK, "register.html", nil)
 }
-
-func AddEmployee(c echo.Context) error {
+func RegisterEmployee(c echo.Context) error {
 	name := c.FormValue("name")
 	mobile := c.FormValue("mobile")
 	email := c.FormValue("email")
@@ -34,20 +38,16 @@ func AddEmployee(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func UpdateEmployee(c echo.Context) error {
+func SetStatusEmployee(c echo.Context) error {
 	id := c.FormValue("id")
-	name := c.FormValue("name")
-	mobile := c.FormValue("mobile")
-	email := c.FormValue("email")
-	username := c.FormValue("username")
-	address := c.FormValue("address")
+	status := c.FormValue("status")
 
 	convId, err := strconv.Atoi(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
 
-	result, err := models.UpdateEmployee(convId, name, mobile, email, username, address)
+	result, err := models.SetStatusEmployee(convId, status)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
@@ -55,7 +55,7 @@ func UpdateEmployee(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func DeleteEmployee(c echo.Context) error {
+func ViewStatusEmployee(c echo.Context) error {
 	id := c.Param("id")
 
 	convId, err := strconv.Atoi(id)
@@ -63,7 +63,16 @@ func DeleteEmployee(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
 
-	result, err := models.DeleteEmployee(convId)
+	result, err := models.FindEmployee(convId)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	}
+
+	return c.JSON(http.StatusOK, result)
+}
+
+func LaporanAll(c echo.Context) error {
+	result, err := models.GetAllEmployee()
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
@@ -72,7 +81,7 @@ func DeleteEmployee(c echo.Context) error {
 	return c.JSON(http.StatusOK, result)
 }
 
-func FindEmployee(c echo.Context) error {
+func LaporanById(c echo.Context) error {
 	id := c.Param("id")
 
 	convId, err := strconv.Atoi(id)

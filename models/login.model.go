@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/inggit_prakasa/Employee/database"
-	"github.com/inggit_prakasa/Employee/helpers"
+	"EMPLOYEE/database"
+	"EMPLOYEE/helpers"
 )
 
 type User struct {
