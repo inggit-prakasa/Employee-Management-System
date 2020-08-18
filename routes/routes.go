@@ -38,7 +38,6 @@ func Init() *echo.Echo {
 
 	//--------------------------------------------------------
 	e.GET("/employee", controllers.EmployeePage)
-	e.GET("/employee", controllers.GetAllEmployee)
 	e.GET("/employee/:id", controllers.FindEmployee)
 	e.POST("/employee", controllers.AddEmployee)
 	e.PUT("/employee", controllers.UpdateEmployee)

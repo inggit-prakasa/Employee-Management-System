@@ -5,12 +5,16 @@ import (
 	"strconv"
 
 	"github.com/inggit_prakasa/Employee/models"
-
 	"github.com/labstack/echo"
 )
 
 func EmployeePage(c echo.Context) error {
-	return c.Render(http.StatusOK, "employee.html", nil)
+	result, err := models.GetAllEmployee()
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
+	}
+	return c.Render(http.StatusOK, "employee.html", result)
 }
 
 func GetAllEmployee(c echo.Context) error {
@@ -91,8 +95,6 @@ func FindEmployee(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, result)
 }
-
-//=================================================================================================//
 
 func RegisterEmployee(c echo.Context) error {
 	name := c.FormValue("name")

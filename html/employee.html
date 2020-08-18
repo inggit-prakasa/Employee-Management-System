@@ -149,8 +149,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <td>{{.Mobile}}</td>
                     <td>{{.Address}}</td>
                     <td>
-                      <button type="button" class="btn btn-block btn-outline-warning btn-flat">Edit</button>
-                      <button type="button" class="btn btn-block btn-outline-danger btn-flat">Delete</button>
+                      <div class="row" >
+                        <button type="button" class="col-sm-4 m-2 btn btn-block btn-outline-warning btn-flat" data-toggle="modal" data-target="#modal-lg">Edit</button>
+                        <button type="button" class="col-sm-4 m-2 btn btn-block btn-outline-danger btn-flat">Delete</button>
+                      </div>
                     </td>
                   </tr>
                   {{end}}
@@ -181,6 +183,43 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <footer class="main-footer">
   </footer>
 </div>
+<div class="modal fade" id="modal-lg">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Edit Employee</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form role="form">
+          <div class="card-body">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Nama">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Nomor Hp">
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Alamat">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
   <!-- ./wrapper -->
 
   <!-- REQUIRED SCRIPTS -->
