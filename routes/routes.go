@@ -75,6 +75,13 @@ func Init() *echo.Echo {
 	AdminGroup.PUT("/attendance", controllers.EditAttendance)
 	AdminGroup.DELETE("/delattendance/:id", controllers.DeleteAttendance)
 
+	//-----------------------------------------------------------
+	e.GET("/leave", controllers.LeavePage)
+	e.GET("/leave/:id", controllers.FindLeave)
+	e.POST("/aleave", controllers.AddLeave)
+	e.PUT("/leave", controllers.EditLeave)
+	e.DELETE("/delleteleave/:id", controllers.DeleteLeave)
+
 	//------------------------------------------------------------
 	AdminGroup.GET("/salary", controllers.SalaryPage)
 	AdminGroup.GET("/salary/:id", controllers.FindSalary)
