@@ -14,6 +14,7 @@ type employee struct {
 	Mobile   string `json:"mobile"`
 	Email    string `json:"email"`
 	Username string `json:"username"`
+	Password string `json:"password"`
 	Address  string `json:"address"`
 	Status   string `json:"status"`
 	Password string `json:"password"`
@@ -26,7 +27,7 @@ func GetAllEmployee() (Response, error) {
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee"
+	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email,employee_username,employee_address FROM employee"
 
 	rows, err := conn.Query(sqlStatement)
 
@@ -52,7 +53,7 @@ func GetAllEmployee() (Response, error) {
 	return res, nil
 }
 
-func AddEmployee(name, mobile, email, username, address string) (Response, error) {
+func AddEmployee(name, mobile, email, username ,password ,address string) (Response, error) {
 	var res Response
 
 	v := validator.New()
@@ -62,6 +63,7 @@ func AddEmployee(name, mobile, email, username, address string) (Response, error
 		Mobile:   mobile,
 		Email:    email,
 		Username: username,
+		Password: password,
 		Address:  address,
 	}
 
@@ -72,14 +74,14 @@ func AddEmployee(name, mobile, email, username, address string) (Response, error
 
 	conn := database.Connection()
 
-	sqlStatement := "INSERT employee (employee_name, employee_mobile, employee_email, employee_username, employee_address) VALUES (?,?,?,?,?)"
+	sqlStatement := "INSERT employee (employee_name, employee_mobile, employee_email, employee_username,employee_password ,employee_address) VALUES (?,?,?,?,?,?)"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(name, mobile, email, username, address)
+	result, err := stmt.Exec(name, mobile, email, username ,password ,address)
 	if err != nil {
 		return res, err
 	}
@@ -96,7 +98,32 @@ func AddEmployee(name, mobile, email, username, address string) (Response, error
 	}
 
 	return res, nil
+}
 
+func CheckEmail(email string) bool {
+	conn := database.Connection()
+	var jumlah int
+
+	sqlStatement := "SELECT COUNT(employee_id) as 'jumlah' FROM employee WHERE employee_email = ?"
+
+	rows, err := conn.Query(sqlStatement, email)
+	defer rows.Close()
+
+	if err != nil {
+		return false
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&jumlah)
+		if err != nil {
+			return false
+		}
+	}
+
+	if jumlah == 0 {
+		return false
+	}
+	return true
 }
 
 func UpdateEmployee(id int, name, mobile, email, username, address string) (Response, error) {

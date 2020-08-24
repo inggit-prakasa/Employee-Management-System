@@ -5,7 +5,6 @@ import (
 	"io"
 
 	"github.com/inggit_prakasa/Employee/controllers"
-
 	"github.com/labstack/echo"
 )
 
@@ -33,16 +32,26 @@ func Init() *echo.Echo {
 	e.Renderer = renderer
 
 	e.Static("/", "html")
-	e.POST("/", controllers.Dashboard)
-	e.GET("/", controllers.Dashboard)
+
+	//jwtGroup := e.Group("/jwt")
+	//jwtGroup.Use(middleware.TokenJwt)
+	//jwtGroup.GET("/main", controllers.MainJwt)
+	//e.GET("/createJWT",controllers.CreateJWT)
+
+	AdminGroup := e.Group("/admin")
+	AdminGroup.Use(controllers.CheckCookieLogin)
+	AdminGroup.POST("/dashboard", controllers.Dashboard)
+	AdminGroup.GET("/dashboard", controllers.Dashboard)
 
 	//--------------------------------------------------------
-	e.GET("/employee", controllers.EmployeePage)
-	e.GET("/employee", controllers.GetAllEmployee)
-	e.GET("/employee/:id", controllers.FindEmployee)
-	e.POST("/employee", controllers.AddEmployee)
-	e.PUT("/employee", controllers.UpdateEmployee)
-	e.DELETE("/employee", controllers.DeleteEmployee)
+	AdminGroup.GET("/employee", controllers.EmployeePage)
+	AdminGroup.POST("/employee", controllers.EmployeePage)
+	AdminGroup.GET("/employee/:id", controllers.FindEmployee)
+	AdminGroup.POST("/updateemployee", controllers.UpdateEmployee)
+	AdminGroup.GET("/addemployee", controllers.AddEmployeePage)
+	AdminGroup.POST("/addemp", controllers.AddEmployee)
+	AdminGroup.POST("/delemp/:id", controllers.DeleteEmployee)
+	//e.DELETE("/employee", controllers.DeleteEmployee)
 
 	//-----------------------------------------------------------------
 	e.POST("/register", controllers.RegisterEmployee)
@@ -51,19 +60,20 @@ func Init() *echo.Echo {
 	e.GET("/viewstatus/:id", controllers.ViewStatusEmployee)
 	e.GET("/laporanall", controllers.LaporanAll)
 	e.GET("/laporanbyid/:id", controllers.LaporanById)
+
 	//-----------------------------------------------------------------
-	e.GET("/employee", controllers.GetAllEmployee)
-	e.GET("/employee/:id", controllers.FindEmployee)
-	e.POST("/employee", controllers.AddEmployee)
-	e.PUT("/employee", controllers.UpdateEmployee)
-	e.DELETE("/delemployee/:id", controllers.DeleteEmployee)
+	//e.GET("/employee", controllers.GetAllEmployee)
+	//e.GET("/employee/:id", controllers.FindEmployee)
+	//e.POST("/employee", controllers.AddEmployee)
+	//e.PUT("/employee", controllers.UpdateEmployee)
+	//e.DELETE("/delemployee/:id", controllers.DeleteEmployee)
 
 	//-----------------------------------------------------------
-	e.GET("/attendance", controllers.AttendancePage)
-	e.GET("/attendance/:id", controllers.FindAttendance)
-	e.POST("/attendance", controllers.AddAttendance)
-	e.PUT("/attendance", controllers.EditAttendance)
-	e.DELETE("/delattendance/:id", controllers.DeleteAttendance)
+	AdminGroup.GET("/attendance", controllers.AttendancePage)
+	AdminGroup.GET("/attendance/:id", controllers.FindAttendance)
+	AdminGroup.POST("/attendance", controllers.AddAttendance)
+	AdminGroup.PUT("/attendance", controllers.EditAttendance)
+	AdminGroup.DELETE("/delattendance/:id", controllers.DeleteAttendance)
 
 	//-----------------------------------------------------------
 	e.GET("/leave", controllers.LeavePage)
@@ -73,16 +83,18 @@ func Init() *echo.Echo {
 	e.DELETE("/delleteleave/:id", controllers.DeleteLeave)
 
 	//------------------------------------------------------------
-	e.GET("/salary", controllers.SalaryPage)
-	e.GET("/salary/:id", controllers.FindSalary)
-	e.POST("/salary", controllers.AddSalary)
-	e.PUT("/salary", controllers.EditSalary)
-	e.DELETE("/delsalary/:id", controllers.DeleteSalary)
+	AdminGroup.GET("/salary", controllers.SalaryPage)
+	AdminGroup.GET("/salary/:id", controllers.FindSalary)
+	AdminGroup.POST("/salary", controllers.AddSalary)
+	AdminGroup.PUT("/salary", controllers.EditSalary)
+	AdminGroup.DELETE("/delsalary/:id", controllers.DeleteSalary)
 
 	//----------------------------------------------------------------------
 	e.GET("/generate-hash/:password", controllers.GenerateHashPassword)
-	e.POST("/login", controllers.CheckLogin)
+	e.POST("/Checklogin", controllers.CheckLogin)
 	e.GET("/login", controllers.Login)
+	e.POST("/login", controllers.Login)
+	e.POST("/logout", controllers.LogOut)
 
 	return e
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/inggit_prakasa/Employee/database"
-
 	"github.com/inggit_prakasa/Employee/routes"
 )
 

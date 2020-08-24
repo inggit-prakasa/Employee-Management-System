@@ -13,15 +13,15 @@ type User struct {
 	Username string `json:"username"`
 }
 
-func CheckLogin(username, password string) (bool, error) {
+func CheckLogin(email, password string) (bool, error) {
 	var obj User
 	var pass string
 
 	con := database.Connection()
 
-	sqlstatement := "SELECT employee_id,employee_username,employee_password FROM employee WHERE employee_username = ?"
+	sqlstatement := "SELECT employee_id,employee_username,employee_password FROM employee WHERE employee_email = ?"
 
-	err := con.QueryRow(sqlstatement, username).Scan(
+	err := con.QueryRow(sqlstatement, email).Scan(
 		&obj.Id, &obj.Username, &pass,
 	)
 

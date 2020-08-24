@@ -28,11 +28,12 @@ func RegisterEmployee(c echo.Context) error {
 	mobile := c.FormValue("mobile")
 	email := c.FormValue("email")
 	username := c.FormValue("username")
+	password := c.FormValue("password")
 	address := c.FormValue("address")
 	//password := c.FormValue("password")
 	//hashPass,_ := helpers.HashPassword
 
-	result, err := models.AddEmployee(name, mobile, email, username, address)
+	result, err := models.AddEmployee(name, mobile, email, username, password, address)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"message": err.Error()})
 	}
