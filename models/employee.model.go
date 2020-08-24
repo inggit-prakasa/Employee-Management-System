@@ -1,28 +1,32 @@
 package models
 
 import (
-	"github.com/go-playground/validator"
-	"github.com/inggit_prakasa/Employee/database"
 	"net/http"
+
+	"github.com/inggit_prakasa/Employee/database"
+
+	"github.com/go-playground/validator"
 )
 
-type Employee struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
-	Mobile string `json:"mobile"`
-	Email string `json:"email"`
+type employee struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	Mobile   string `json:"mobile"`
+	Email    string `json:"email"`
 	Username string `json:"username"`
-	Address string `json:"address"`
+	Password string `json:"password"`
+	Address  string `json:"address"`
+	Status   string `json:"status"`
 }
 
-func GetAllEmployee() (Response,error) {
-	var obj Employee
-	var arrObj []Employee
+func GetAllEmployee() (Response, error) {
+	var obj employee
+	var arrObj []employee
 	var res Response
 
 	conn := database.Connection()
 
-	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee"
+	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email,employee_username,employee_address FROM employee"
 
 	rows, err := conn.Query(sqlStatement)
 
@@ -38,26 +42,27 @@ func GetAllEmployee() (Response,error) {
 			return res, err
 		}
 
-		arrObj = append(arrObj,obj)
+		arrObj = append(arrObj, obj)
 	}
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
 	res.Data = arrObj
 
-	return res,nil
+	return res, nil
 }
 
-func AddEmployee(name, mobile, email, username, address string) (Response,error) {
+func AddEmployee(name, mobile, email, username ,password ,address string) (Response, error) {
 	var res Response
 
 	v := validator.New()
 
-	emp := Employee{
+	emp := employee{
 		Name:     name,
 		Mobile:   mobile,
 		Email:    email,
 		Username: username,
+		Password: password,
 		Address:  address,
 	}
 
@@ -68,31 +73,56 @@ func AddEmployee(name, mobile, email, username, address string) (Response,error)
 
 	conn := database.Connection()
 
-	sqlStatement := "INSERT employee (employee_name, employee_mobile, employee_email, employee_username, employee_address) VALUES (?,?,?,?,?)"
+	sqlStatement := "INSERT employee (employee_name, employee_mobile, employee_email, employee_username,employee_password ,employee_address) VALUES (?,?,?,?,?,?)"
 
 	stmt, err := conn.Prepare(sqlStatement)
 	if err != nil {
 		return res, err
 	}
 
-	result, err := stmt.Exec(name,mobile,email,username,address)
+	result, err := stmt.Exec(name, mobile, email, username ,password ,address)
 	if err != nil {
 		return res, err
 	}
 
 	lastInsertId, err := result.LastInsertId()
 	if err != nil {
-		return res,err
+		return res, err
 	}
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
-	res.Data = map[string]int64 {
-		"last_insert_id" : lastInsertId,
+	res.Data = map[string]int64{
+		"last_insert_id": lastInsertId,
 	}
 
-	return res,nil
+	return res, nil
+}
 
+func CheckEmail(email string) bool {
+	conn := database.Connection()
+	var jumlah int
+
+	sqlStatement := "SELECT COUNT(employee_id) as 'jumlah' FROM employee WHERE employee_email = ?"
+
+	rows, err := conn.Query(sqlStatement, email)
+	defer rows.Close()
+
+	if err != nil {
+		return false
+	}
+
+	for rows.Next() {
+		err = rows.Scan(&jumlah)
+		if err != nil {
+			return false
+		}
+	}
+
+	if jumlah == 0 {
+		return false
+	}
+	return true
 }
 
 func UpdateEmployee(id int, name, mobile, email, username, address string) (Response, error) {
@@ -107,7 +137,7 @@ func UpdateEmployee(id int, name, mobile, email, username, address string) (Resp
 		return res, err
 	}
 
-	result, err := stmt.Exec(name,mobile,email,username,address,id)
+	result, err := stmt.Exec(name, mobile, email, username, address, id)
 	if err != nil {
 		return res, err
 	}
@@ -119,22 +149,22 @@ func UpdateEmployee(id int, name, mobile, email, username, address string) (Resp
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
-	res.Data = map[string]int64 {
-		"rowsAffected" : rowsAffected,
+	res.Data = map[string]int64{
+		"rowsAffected": rowsAffected,
 	}
 
 	return res, nil
 }
 
-func FindEmployee(id int) (Response,error) {
+func FindEmployee(id int) (Response, error) {
 	var res Response
-	var obj Employee
+	var obj employee
 
 	conn := database.Connection()
 
 	sqlStatement := "SELECT employee_id,employee_name,employee_mobile,employee_email, employee_username,employee_address FROM employee WHERE employee_id = ?"
 
-	rows, err := conn.Query(sqlStatement,id)
+	rows, err := conn.Query(sqlStatement, id)
 
 	defer rows.Close()
 
@@ -181,8 +211,40 @@ func DeleteEmployee(id int) (Response, error) {
 
 	res.Status = http.StatusOK
 	res.Message = "Success"
-	res.Data = map[string]int64 {
-		"rowsAffected" : rowsAffected,
+	res.Data = map[string]int64{
+		"rowsAffected": rowsAffected,
+	}
+
+	return res, nil
+}
+
+//------------------------------------------------------------------------------------------
+func SetStatusEmployee(id int, status string) (Response, error) {
+	var res Response
+
+	conn := database.Connection()
+
+	sqlStatement := "UPDATE employee SET employee_status = ? WHERE employee_id = ?"
+
+	stmt, err := conn.Prepare(sqlStatement)
+	if err != nil {
+		return res, err
+	}
+
+	result, err := stmt.Exec(status, id)
+	if err != nil {
+		return res, err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return res, err
+	}
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = map[string]int64{
+		"rowsAffected": rowsAffected,
 	}
 
 	return res, nil

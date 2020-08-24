@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/inggit_prakasa/Employee/config"
 )
