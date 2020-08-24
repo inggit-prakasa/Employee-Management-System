@@ -29,6 +29,8 @@ func RegisterEmployee(c echo.Context) error {
 	email := c.FormValue("email")
 	username := c.FormValue("username")
 	address := c.FormValue("address")
+	//password := c.FormValue("password")
+	//hashPass,_ := helpers.HashPassword
 
 	result, err := models.AddEmployee(name, mobile, email, username, address)
 	if err != nil {

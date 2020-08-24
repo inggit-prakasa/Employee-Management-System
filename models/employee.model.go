@@ -16,6 +16,7 @@ type employee struct {
 	Username string `json:"username"`
 	Address  string `json:"address"`
 	Status   string `json:"status"`
+	Password string `json:"password"`
 }
 
 func GetAllEmployee() (Response, error) {
